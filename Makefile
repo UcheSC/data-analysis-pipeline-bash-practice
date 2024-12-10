@@ -4,7 +4,7 @@
 .PHONY: clean
 
 # hello I am another PHONY target to run all those targets together
-all: results/figure/isles.png results/figure/abyss.png results/figure/last.png results/figure/sierra.png
+all: report/count_report.html report/count_report_files
 
 # Count the words
 results/isles.dat: data/isles.txt scripts/wordcount.py
@@ -27,7 +27,7 @@ results/sierra.dat: data/sierra.txt scripts/wordcount.py
 		--input_file=data/sierra.txt \
 		--output_file=results/sierra.dat
 
-# Create the plots from te word-counts
+# Create the plots from the word-counts
 results/figure/isles.png: results/isles.dat scripts/plotcount.py
 	python scripts/plotcount.py \
 	    --input_file=results/isles.dat \
@@ -48,6 +48,10 @@ results/figure/sierra.png: results/sierra.dat scripts/plotcount.py
 	    --input_file=results/sierra.dat \
 	    --output_file=results/figure/sierra.png
 
+# Renders a report
+report/count_report.html report/count_report_files: results/figure/isles.png results/figure/abyss.png results/figure/last.png results/figure/sierra.png
+	quarto render report/count_report.qmd
+
 # deletes the file passing the force flag since we cannot interact with the bash
 clean:
 	rm -f results/isles.dat  \
@@ -58,5 +62,7 @@ clean:
 		results/figure/abyss.png \
 		results/figure/last.png \
 		results/figure/sierra.png
+	rm -rf report/count_report.html \
+		report/count_report_files
 
 
